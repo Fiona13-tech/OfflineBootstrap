@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Coin Chase Game</title>
+  <title>Coin Chase Game - Gradual Enemy Speed</title>
   <link rel="stylesheet" href="../css/bootstrap.min.css">
   <style>
     * {
@@ -66,12 +66,6 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    /* =============================================
-       CANVAS — THIS IS THE ONLY CHANGE
-       We remove the fixed width/height/aspect-ratio
-       and just let it fill its container naturally.
-       The JavaScript below does the rest.
-    ============================================= */
     #canvasWrapper {
       width: 100%;
       max-width: 1200px;
@@ -80,7 +74,7 @@
     canvas {
       border: 3px solid #ffa600;
       display: block;
-      width: 100%;        /* fills the wrapper */
+      width: 100%;
       height: auto;
       background-color: #b30909;
       border-radius: 8px;
@@ -118,6 +112,25 @@
       margin-top: 8px;
       text-align: center;
     }
+    
+    @keyframes livesFlash {
+      0% { color: #fffb94; transform: scale(1); }
+      50% { color: #ffd700; transform: scale(1.3); text-shadow: 0 0 10px gold; }
+      100% { color: #fffb94; transform: scale(1); }
+    }
+    
+    .lives-reset {
+      animation: livesFlash 0.6s ease-in-out 2;
+      display: inline-block;
+    }
+    
+    .speed-badge {
+      background: rgba(0,0,0,0.5);
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      margin-left: 10px;
+    }
   </style>
 </head>
 <body>
@@ -131,9 +144,9 @@
       <span class="hud-item">❤️ Lives: <strong id="livesDisplay">3</strong></span>
       <span class="hud-item">⚡ Level: <strong id="levelDisplay">1</strong></span>
       <span class="hud-item">✨ Boost: <strong id="rewardDisplay">0%</strong></span>
+      <span class="hud-item">🏃 Enemy Speed: <strong id="speedDisplay">SLOW</strong></span>
     </div>
 
-    <!-- Wrapper div controls the width; canvas fills it -->
     <div class="row justify-content-center mb-3">
       <div id="canvasWrapper" class="col-12 col-md-10 col-lg-8 mx-auto">
         <canvas id="gameCanvas"></canvas>
@@ -150,8 +163,8 @@
 
     <div id="controls" class="text-center text-white-50 small">
       Arrow keys to move &nbsp;|&nbsp;
-      Blue block = Escape Zone (enemy slows down) &nbsp;|&nbsp;
-      Collect coins to fill the boost meter and trigger a temporary power-up
+      Blue block = Escape Zone (enemy slows down inside!) &nbsp;|&nbsp;
+      Collect coins to fill the boost meter
     </div>
   </div>
 
@@ -159,50 +172,30 @@
   <script>
     // =============================================
     // CANVAS SETUP — RESPONSIVE SIZE
-    //
-    // Instead of hardcoding width/height on the
-    // <canvas> tag, we measure the wrapper div
-    // and set the canvas to match.
-    //
-    // We also listen for window resize so the
-    // canvas always fits the screen.
     // =============================================
     const canvas  = document.getElementById('gameCanvas');
     const ctx     = canvas.getContext('2d');
 
-    // This sets the canvas drawing resolution
-    // to match its actual size on screen.
     function resizeCanvas() {
       const wrapper = document.getElementById('canvasWrapper');
       const w = wrapper.clientWidth;
-      // Keep a 4:3 ratio — change the 0.75 to get a different shape
-      // e.g. 0.5625 for 16:9 widescreen
       const h = Math.round(w * 0.75);
       canvas.width  = w;
       canvas.height = h;
     }
 
-    resizeCanvas();  // run once on load
-
-    // Run again whenever the window is resized
+    resizeCanvas();
     window.addEventListener('resize', () => {
       resizeCanvas();
-      // If the game is not running, just show a blue screen
       if (!running) {
         ctx.fillStyle = '#0000FF';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
     });
 
-    // W and H now come from the canvas itself
-    // They update automatically after resizeCanvas()
-    // IMPORTANT: always use canvas.width / canvas.height
-    // in your game logic — not W/H — if you want them
-    // to reflect the latest size after a resize.
     let W = canvas.width;
     let H = canvas.height;
 
-    // Keep W and H in sync after resize
     window.addEventListener('resize', () => {
       W = canvas.width;
       H = canvas.height;
@@ -396,8 +389,7 @@
 
 
     // =============================================
-    // SHAPES — all use canvas.width / canvas.height
-    // so they scale with the canvas automatically
+    // SHAPES
     // =============================================
     const DIVIDER = { get x() { return canvas.width/2 + 15 }, get y() { return canvas.height/2 - 120 }, w: 10, h: 240 };
 
@@ -444,6 +436,29 @@
     let movingObstacles = [];
     let endlessMode = false;
     let endlessCoinsSpawnTime = 0;
+
+    // 🔥 NEW: Function to calculate enemy speed based on level (starts slow, increases gradually)
+    function getEnemySpeed() {
+      // Base speed: 65 at level 1 (very beginner friendly)
+      // Increase by 8 each level
+      // Level 1: 65, Level 2: 73, Level 3: 81, Level 4: 89, Level 5: 97
+      // Level 10: 137, Level 20: 217 (still challenging but fair)
+      let speed = 65 + (level - 1) * 8;
+      // Cap at 250 max so it doesn't become impossible
+      return Math.min(speed, 250);
+    }
+    
+    // Update speed display
+    function updateSpeedDisplay() {
+      const currentSpeed = getEnemySpeed();
+      let speedText = "";
+      if (currentSpeed <= 75) speedText = "🐢 VERY SLOW";
+      else if (currentSpeed <= 95) speedText = "🚶 SLOW";
+      else if (currentSpeed <= 125) speedText = "🏃 MEDIUM";
+      else if (currentSpeed <= 165) speedText = "💨 FAST";
+      else speedText = "⚡ VERY FAST";
+      document.getElementById('speedDisplay').textContent = speedText;
+    }
 
 
     // =============================================
@@ -628,7 +643,7 @@
 
 
     // =============================================
-    // INIT LEVEL
+    // INIT LEVEL - MODIFIED TO RESET LIVES
     // =============================================
     function initLevel() {
       // Update W and H in case canvas was resized
@@ -681,13 +696,45 @@
         { x: 100,     y: H - 100 },
         { x: W - 100, y: H - 100 },
       ];
-      enemy = { x: edges[side].x, y: edges[side].y, w: 20, h: 20, speed: 120 + (level * 20) };
+      
+      // 🔥 FIXED: Enemy speed now uses gradual scale
+      const enemySpeed = getEnemySpeed();
+      enemy = { x: edges[side].x, y: edges[side].y, w: 20, h: 20, speed: enemySpeed };
+      
+      // Update speed display in HUD
+      updateSpeedDisplay();
 
       if (!bgStars.length) createBackgroundStars(120);
       coins = spawnCoins(4 + level * 2);
       spawnMovingObstacles(4);
       endlessCoinsSpawnTime = 0;
       invincibleFrames = 0;
+      
+      // Reset lives to 3 when entering a new level (but not on initial start)
+      if (level > 1) {
+        lives = 3;
+        document.getElementById('livesDisplay').textContent = lives;
+        // Add visual flash to show lives reset
+        const livesElement = document.getElementById('livesDisplay');
+        livesElement.classList.add('lives-reset');
+        setTimeout(() => {
+          livesElement.classList.remove('lives-reset');
+        }, 600);
+        showMessage(`❤️ LIVES RESET TO 3 for Level ${level}! Enemy speed: ${enemySpeed} ❤️`);
+        setTimeout(() => { if (running && !paused) showMessage(''); }, 2000);
+      }
+      
+      // Show enemy speed on level up
+      if (level > 1) {
+        const speedMsg = document.getElementById('message');
+        setTimeout(() => {
+          if (running && !paused) {
+            const speedText = document.getElementById('speedDisplay').textContent;
+            showMessage(`Level ${level} - Enemy: ${speedText}`);
+            setTimeout(() => { if (running && !paused && showMessage) showMessage(''); }, 1500);
+          }
+        }, 1800);
+      }
     }
 
 
@@ -735,6 +782,7 @@
     function moveEnemy(deltaTime) {
       moveObstacles(deltaTime);
       const hiding = playerIsHiding();
+      // Enemy slows down significantly in escape zone
       const currentSpeed = hiding ? 40 : enemy.speed * (rewardActive ? 0.7 : 1);
       const dx   = player.x - enemy.x;
       const dy   = player.y - enemy.y;
@@ -830,9 +878,10 @@
         level++;
         document.getElementById('levelDisplay').textContent = level;
         playLevelUpSound();
-        showMessage('Level ' + level + '!  Enemy is faster!');
+        const newSpeed = getEnemySpeed();
+        showMessage(`Level ${level}! Enemy speed: ${newSpeed}`);
         setTimeout(() => { if (running) showMessage(''); }, 1400);
-        initLevel();
+        initLevel();  // This will now reset lives when level > 1
       }
 
       if (endlessMode) {
@@ -946,6 +995,11 @@
         ctx.fillStyle = 'rgba(100, 140, 255, 0.15)';
         ctx.fillRect(ESCAPE_BLOCK.x, ESCAPE_BLOCK.y, ESCAPE_BLOCK.w, ESCAPE_BLOCK.h);
       }
+      
+      // Draw speed indicator
+      ctx.font = 'bold 12px Arial';
+      ctx.fillStyle = 'rgba(255,255,255,0.7)';
+      ctx.fillText(`Enemy Speed: ${Math.round(enemy.speed)}`, 10, 30);
     }
 
 
@@ -996,7 +1050,6 @@
     });
 
     function startGame() {
-      // Resize canvas fresh before starting
       resizeCanvas();
       W = canvas.width;
       H = canvas.height;
@@ -1021,8 +1074,11 @@
       document.getElementById('livesDisplay').textContent = '3';
       document.getElementById('levelDisplay').textContent = '1';
       document.getElementById('startBtn').style.display = 'none';
+      
+      // Update speed display for level 1
+      updateSpeedDisplay();
 
-      showMessage('Reach Level 10 for Endless Mode!');
+      showMessage('🐢 Enemy starts SLOW! Collect coins to level up!');
       playBackgroundMusic();
       initLevel();
       lastTime = performance.now();
@@ -1033,4 +1089,4 @@
 
   </script>
 </body>
-</html>
+</html> 
