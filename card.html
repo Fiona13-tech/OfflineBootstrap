@@ -175,6 +175,7 @@
       animation: float 6s linear infinite;
     }
 
+    /* SIMPLIFIED NAVBAR - ONLY WHAT YOU NEED FOR THE GAME */
     .navbar-custom {
       background: linear-gradient(90deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
       border-bottom: 2px solid #ffd700;
@@ -207,99 +208,70 @@
 </head>
 
 <body>
-   <nav class="navbar navbar-dark navbar-expand-sm fixed-top navbar-custom">
+  <!-- SIMPLIFIED NAVIGATION BAR - ONLY GAME ESSENTIALS -->
+  <nav class="navbar navbar-dark navbar-expand-sm fixed-top navbar-custom">
     <div class="container">
-        <a href="#"
-    class="navbar-brand h1">
-        <img src="Logo.jpg" width="30px" class="d-inline-block align-top rounded-circle" height="30px" alt="logo" >
+      <a href="#" class="navbar-brand h1">
+        <img src="Logo.jpg" width="30px" class="d-inline-block align-top rounded-circle" height="30px" alt="logo">
         Coin Chase
+      </a>
 
-    </a>
-
-    <button 
-    type="button"
-    data-bs-toggle="collapse"
-    data-bs-target="#navbarNav"
-    class="navbar-toggler"
-    aria-controls="navbarNav"
-    aria-expanded="false"
-    aria-label="Toggle navigation"
-     >
+      <button type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" class="navbar-toggler" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
-    </button> 
+      </button>
 
-    <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-            <li class="nav-item">
-                <a href="index.html" class="nav-link active">🏠 Home</a>
-            </li>
-             <li class="nav-item">
-                <a href="Game 4/escape.html" class="nav-link ">🎮 Play</a>
-            </li>
-             <li class="nav-item">
-                <a href="leaderboard.html" class="nav-link ">🏆 Scoreboard</a>
-            </li>
-             <li class="nav-item dropdown">
-                <a href="#" class="nav-link dropdown-toggle"
-                  id="navbarDropdown"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                  aria-expanded="false"
-                >ℹ️ About</a>
-                <ul class="dropdown-menu"
-                  aria-labelledby="navbarDropdown">
-                <li >
-                    <a href="#" class="dropdown-item">About Us</a>
-                </li>
-                <li >
-                    <a href="#" class="dropdown-item">How to Play</a>
-                </li>
-                </ul>
-            </li>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a href="Game 4/escape.html" class="nav-link">🎮 Play</a>
+          </li>
+          <li class="nav-item">
+            <a href="leaderboard.html" class="nav-link">🏆 Scoreboard</a>
+          </li>
         </ul>
+      </div>
     </div>
-    </div>      
-   </nav> 
-   <!--end of navbar-->
+  </nav>
+  <!-- END OF SIMPLIFIED NAVBAR -->
 
-<div class="hero-wrapper">
-  <div class="hero-card text-center welcome-content">
-    <h1 class="display-4 text-light">Welcome to Coin Chase!</h1>
-    <img src="coin.png" alt="Coin" class="img-fluid mb-4 coin-image">
-    <p class="lead text-light">Get ready to collect coins and have fun!</p>
-    
-    <div class="d-flex flex-column flex-md-row justify-content-center gap-3 hero-buttons">
-      <button class="btn btn-primary btn-lg" type="button" data-bs-toggle="collapse" data-bs-target="#howToPlayCollapse" aria-expanded="false" aria-controls="howToPlayCollapse">How to Play</button>
-      <a href="Game 4/escape.html" class="btn btn-success btn-lg text-white text-decoration-none">Continue to the Game</a>
-    </div>
-    
-    <div class="collapse mt-4" id="howToPlayCollapse">
-      <div class="card card-body bg-dark border-light text-start text-white shadow-lg howto-card">
-        <h5>How to Play Coin Chase</h5>
-        <ul class="mb-0">
-          <li><strong>Objective:</strong> Collect all coins in the arena while avoiding the enemy.</li>
-          <li><strong>Movement:</strong> Use arrow keys or WASD to move.</li>
-          <li><strong>Escape Zone:</strong> The blue block slows the enemy and gives you a safe spot.</li>
-          <li><strong>Levels:</strong> Collect all coins to advance. Each level gets harder.</li>
-          <li><strong>Lives:</strong> You have 3 lives. The enemy costs one life when it catches you.</li>
-          <li><strong>Pause:</strong> Press P or Space to pause/resume during the game.</li>
-        </ul>
-        <p class="mb-0">Click the button again to hide these instructions.</p>
+  <div class="hero-wrapper">
+    <div class="hero-card text-center welcome-content">
+      <h1 class="display-4 text-light">Welcome to Coin Chase!</h1>
+      <img src="coin.png" alt="Coin" class="img-fluid mb-4 coin-image">
+      <p class="lead text-light">Get ready to collect coins and have fun!</p>
+      
+      <div class="d-flex flex-column flex-md-row justify-content-center gap-3 hero-buttons">
+        <button class="btn btn-primary btn-lg" type="button" data-bs-toggle="collapse" data-bs-target="#howToPlayCollapse" aria-expanded="false" aria-controls="howToPlayCollapse">How to Play</button>
+        <a href="Game 4/escape.html" class="btn btn-success btn-lg text-white text-decoration-none">Continue to the Game</a>
+      </div>
+      
+      <div class="collapse mt-4" id="howToPlayCollapse">
+        <div class="card card-body bg-dark border-light text-start text-white shadow-lg howto-card">
+          <h5>How to Play Coin Chase</h5>
+          <ul class="mb-0">
+            <li><strong>Objective:</strong> Collect all coins in the arena while avoiding the enemy.</li>
+            <li><strong>Movement:</strong> Use arrow keys or WASD to move.</li>
+            <li><strong>Escape Zone:</strong> The blue block slows the enemy and gives you a safe spot.</li>
+            <li><strong>Levels:</strong> Collect all coins to advance. Each level gets harder.</li>
+            <li><strong>Lives:</strong> You have 3 lives. The enemy costs one life when it catches you.</li>
+            <li><strong>Pause:</strong> Press P or Space to pause/resume during the game.</li>
+          </ul>
+          <p class="mb-0">Click the button again to hide these instructions.</p>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-
-
-<div class="floating-particles">
-  <div class="particle" style="left: 10%; animation-delay: 0s; width: 10px; height: 10px;"></div>
-  <div class="particle" style="left: 20%; animation-delay: 1s; width: 8px; height: 8px;"></div>
-  <div class="particle" style="left: 30%; animation-delay: 2s; width: 12px; height: 12px;"></div>
-  <div class="particle" style="left: 40%; animation-delay: 3s; width: 6px; height: 6px;"></div>
-  <div class="particle" style="left: 50%; animation-delay: 4s; width: 10px; height: 10px;"></div>
-  <div class="particle" style="left: 60%; animation-delay: 5s; width: 8px; height: 8px;"></div>
-  <div class="particle" style="left: 70%; animation-delay: 6s; width: 12px; height: 12px;"></div>
-  <div class="particle" style="left: 80%; animation-delay: 7s; width: 6px; height: 6px;"></div>
-  <div class="particle" style="left: 90%; animation-delay: 8s; width: 10px; height: 10px;"></div>
-</div>
+  <div class="floating-particles">
+    <div class="particle" style="left: 10%; animation-delay: 0s; width: 10px; height: 10px;"></div>
+    <div class="particle" style="left: 20%; animation-delay: 1s; width: 8px; height: 8px;"></div>
+    <div class="particle" style="left: 30%; animation-delay: 2s; width: 12px; height: 12px;"></div>
+    <div class="particle" style="left: 40%; animation-delay: 3s; width: 6px; height: 6px;"></div>
+    <div class="particle" style="left: 50%; animation-delay: 4s; width: 10px; height: 10px;"></div>
+    <div class="particle" style="left: 60%; animation-delay: 5s; width: 8px; height: 8px;"></div>
+    <div class="particle" style="left: 70%; animation-delay: 6s; width: 12px; height: 12px;"></div>
+    <div class="particle" style="left: 80%; animation-delay: 7s; width: 6px; height: 6px;"></div>
+    <div class="particle" style="left: 90%; animation-delay: 8s; width: 10px; height: 10px;"></div>
+  </div>
+</body>
+</html>

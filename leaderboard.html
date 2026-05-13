@@ -3,137 +3,741 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-       <link rel="stylesheet" href="css/bootstrap.min.css">
+    <title>Coin Chase - Hall of Fame</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', system-ui, 'Inter', sans-serif;
+        }
+
+        /* floating particles */
+        .particle-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, rgba(255,215,0,0.5) 0%, rgba(255,180,50,0) 70%);
+            border-radius: 50%;
+            animation: floatParticle 12s infinite linear;
+        }
+
+        @keyframes floatParticle {
+            0% { transform: translateY(0vh) scale(0.8); opacity: 0.2; }
+            100% { transform: translateY(-100vh) scale(1.2); opacity: 0; }
+        }
+
+        /* main container */
+        .leaderboard-wrapper {
+            position: relative;
+            z-index: 2;
+            padding: 2rem 1rem 3rem;
+        }
+
+        .leaderboard-card {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(12px);
+            border-radius: 48px;
+            border: 1px solid rgba(255, 200, 100, 0.4);
+            box-shadow: 0 30px 50px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        .leaderboard-header {
+            background: linear-gradient(135deg, #1e1a2f, #0f0c1f);
+            padding: 1.5rem;
+            border-bottom: 2px solid #ffd966;
+            text-align: center;
+        }
+
+        .leaderboard-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(145deg, #FFE6A3, #FFB347);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .subhead {
+            color: #c9c2a5;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+        }
+
+        /* leaderboard list */
+        .leaderboard-list {
+            padding: 1.5rem;
+            max-height: 480px;
+            overflow-y: auto;
+        }
+
+        .rank-entry {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: rgba(15, 20, 35, 0.7);
+            margin-bottom: 10px;
+            border-radius: 60px;
+            padding: 0.7rem 1.2rem;
+            transition: all 0.2s;
+            border: 1px solid rgba(255, 200, 100, 0.2);
+        }
+
+        .rank-entry:hover {
+            transform: translateX(5px);
+            background: rgba(30, 35, 55, 0.9);
+            border-color: #ffb34780;
+        }
+
+        .rank-number {
+            width: 55px;
+            font-size: 1.6rem;
+            font-weight: 800;
+            text-align: center;
+        }
+
+        .rank-1 .rank-number { color: #FFD700; text-shadow: 0 0 6px gold; }
+        .rank-2 .rank-number { color: #C0C0C0; text-shadow: 0 0 4px silver; }
+        .rank-3 .rank-number { color: #CD7F32; text-shadow: 0 0 4px #cd7f32; }
+
+        .player-avatar {
+            width: 48px;
+            height: 48px;
+            background: #2a2a4a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            border: 2px solid #ffb347;
+        }
+
+        .player-info {
+            flex: 2;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            gap: 10px;
+        }
+
+        .player-name {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #f7efc3;
+        }
+
+        .player-level {
+            background: #00000066;
+            padding: 3px 12px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: #ffdd99;
+        }
+
+        .player-score {
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: #FFD966;
+            letter-spacing: 1px;
+            min-width: 100px;
+            text-align: right;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #b9b2a2;
+            padding: 2rem;
+            font-size: 1.1rem;
+        }
+
+        /* add score form - simplified (only name, score, level - avatar chosen separately) */
+        .add-score-panel {
+            background: #0f1222dd;
+            backdrop-filter: blur(20px);
+            border-radius: 32px;
+            padding: 1.2rem 1.8rem;
+            margin: 0 1.5rem 1.5rem 1.5rem;
+            border: 1px solid #ffb34755;
+        }
+
+        .form-group-custom {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: flex-end;
+            justify-content: center;
+        }
+
+        .input-field {
+            background: #1e1a2f;
+            border: 1px solid #ffb347aa;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 60px;
+            outline: none;
+            width: 180px;
+        }
+
+        .input-field::placeholder {
+            color: #b9b2a2;
+        }
+
+        /* avatar picker row - player ONLY chooses avatar */
+        .avatar-section {
+            margin-bottom: 1rem;
+        }
+
+        .avatar-label {
+            text-align: center;
+            color: #ffdd99;
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .avatar-picker {
+            display: flex;
+            gap: 10px;
+            background: #0a0e1a;
+            padding: 8px 16px;
+            border-radius: 60px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .avatar-option {
+            width: 48px;
+            height: 48px;
+            background: #2a2a4a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: 0.1s;
+            border: 2px solid transparent;
+        }
+
+        .avatar-option:hover {
+            transform: scale(1.1);
+            background: #3a3a6a;
+        }
+
+        .avatar-option.selected {
+            border-color: #ffd966;
+            box-shadow: 0 0 10px gold;
+        }
+
+        .btn-submit {
+            background: #ffb347;
+            border: none;
+            border-radius: 60px;
+            padding: 8px 28px;
+            font-weight: bold;
+            color: #1e1a2f;
+            transition: 0.1s;
+        }
+
+        .btn-submit:active {
+            transform: scale(0.96);
+        }
+
+        /* navigation buttons */
+        .nav-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            padding: 0 1.5rem 1.5rem 1.5rem;
+        }
+
+        .game-nav-btn {
+            background: #2a2e45;
+            border: none;
+            font-weight: bold;
+            padding: 8px 24px;
+            border-radius: 60px;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            color: #f5e7c8;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+
+        .game-nav-btn:hover {
+            background: #3a3f60;
+            color: #FFD966;
+            transform: translateY(-2px);
+        }
+
+        .game-nav-btn-primary {
+            background: #2a6b2f;
+            color: white;
+        }
+
+        .game-nav-btn-primary:hover {
+            background: #1f5724;
+            color: #ffeaac;
+        }
+
+        .footer-note {
+            text-align: center;
+            font-size: 0.7rem;
+            color: #aa9f7a;
+            padding: 12px;
+        }
+
+        /* badge style */
+        .player-badge {
+            background: #ffb34730;
+            border-radius: 40px;
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: #FFD580;
+            white-space: nowrap;
+        }
+
+        @media (max-width: 700px) {
+            .rank-entry { flex-wrap: wrap; gap: 8px; border-radius: 28px; }
+            .player-score { text-align: left; }
+            .form-group-custom { flex-direction: column; align-items: stretch; }
+            .input-field { width: 100%; }
+            .player-badge { font-size: 0.65rem; }
+        }
+    </style>
 </head>
-<body style="background-image: url('padpng.png'); background-repeat: no-repeat; background-position: center; background-size: cover; min-height: 100vh;">
+<body>
 
+<div class="particle-bg" id="particlesContainer"></div>
 
+<div class="leaderboard-wrapper">
+    <div class="leaderboard-card">
+        <div class="leaderboard-header">
+            <h1>🏆 COIN CHASE HALL OF FAME 🏆</h1>
+            <div class="subhead">⚡ Ranks are calculated automatically by score — pick your avatar and compete! ⚡</div>
+        </div>
 
-   <!-- FIX 1: One single container for the whole leaderboard (removed separate containers per player) -->
-<div class="container py-4" style="max-width: 900px;">
+        <div class="leaderboard-list" id="leaderboardList">
+            <div class="empty-message">Loading champions...</div>
+        </div>
 
-        <h2 class="text-center mb-4 " style="color: #E1F5EE; font-size: 70px;">Leaderboard</h2>
-
-        <!-- FIX 2: Added d-flex flex-column gap-3 here to space players apart -->
-        <div class="d-flex flex-column gap-3">
-
-            <!-- Player 1 -->
-            <div class="list-group-item d-flex align-items-center bg-primary rounded p-4" style="font-size: 30px;">
-                <!-- Rank -->
-                <span class="badge bg-secondary me-3">
-                    <img src="padpng.png" width="30" height="30" alt="1st place">
-                </span>
-                <!-- Avatar -->
-                <img src="padpng.png" alt="User Avatar" class="rounded-circle me-3" style="width: 50px; height: 50px;">
-                <!-- Name and Level in separate columns -->
-                <div class="flex-grow-1 row align-items-center">
-                    <div class="col-7">
-                        <p class="mb-0">Alex King</p>
-                    </div>
-                    <div class="col-5 text-center">
-                        <p class="mb-0" style="font-size: 14px;">Level 42</p>
-                    </div>
-                </div>
-                <!-- Score and Badge -->
-                <div class="d-flex flex-column align-items-end gap-1">
-                    <span class="badge" style="background: #EEEDFE; color: #3C3489;">Champion</span>
-                    <span>12,840 pts</span>
-                </div>
-            </div>
-
-            <!-- Player 2 -->
-            <div class="list-group-item d-flex align-items-center bg-success rounded p-4" style="font-size: 30px;">
-                <!-- Rank -->
-                <span class="badge bg-secondary me-3">
-                    <img src="padpng.png" width="30" height="30" alt="2nd place">
-                </span>
-                <!-- Avatar -->
-                <img src="padpng.png" alt="User Avatar" class="rounded-circle me-3" style="width: 50px; height: 50px;">
-                <!-- Name and Level in separate columns -->
-                <div class="flex-grow-1 row align-items-center">
-                    <div class="col-7">
-                        <p class="mb-0">Sara Reeves</p>
-                    </div>
-                    <div class="col-5 text-center">
-                        <p class="mb-0" style="font-size: 14px;">Level 38</p>
-                    </div>
-                </div>
-                <!-- Score and Badge -->
-                <div class="d-flex flex-column align-items-end gap-1">
-                    <span class="badge" style="background: #E1F5EE; color: #085041;">Elite</span>
-                    <span>11,200 pts</span>
+        <!-- Add Score Section - Player only chooses avatar, name, score, level (rank is automatic) -->
+        <div class="add-score-panel">
+            <div class="avatar-section">
+                <div class="avatar-label">🎭 CHOOSE YOUR AVATAR (click to select)</div>
+                <div class="avatar-picker" id="avatarPicker">
+                    <div class="avatar-option" data-avatar="🐺">🐺</div>
+                    <div class="avatar-option" data-avatar="🐉">🐉</div>
+                    <div class="avatar-option" data-avatar="🦁">🦁</div>
+                    <div class="avatar-option" data-avatar="🐱">🐱</div>
+                    <div class="avatar-option" data-avatar="🦊">🦊</div>
+                    <div class="avatar-option" data-avatar="🐧">🐧</div>
+                    <div class="avatar-option" data-avatar="👑">👑</div>
+                    <div class="avatar-option" data-avatar="⚡">⚡</div>
+                    <div class="avatar-option" data-avatar="🌟">🌟</div>
+                    <div class="avatar-option" data-avatar="🎮">🎮</div>
+                    <div class="avatar-option" data-avatar="🦅">🦅</div>
+                    <div class="avatar-option" data-avatar="🐢">🐢</div>
                 </div>
             </div>
-
-            <!-- Player 3 -->
-            <!-- FIX 3: Rank was showing "3" as text but badge had no label — fixed to show rank number clearly -->
-            <div class="list-group-item d-flex align-items-center bg-info rounded p-4" style="font-size: 30px;">
-                <!-- Rank -->
-                <span class="badge bg-secondary me-3 fs-6">3</span>
-                <!-- Avatar -->
-                <img src="padpng.png" alt="User Avatar" class="rounded-circle me-3" style="width: 50px; height: 50px;">
-                <!-- Name and Level in separate columns -->
-                <div class="flex-grow-1 row align-items-center">
-                    <div class="col-7">
-                        <p class="mb-0">Mike Tan</p>
-                    </div>
-                    <div class="col-5 text-center">
-                        <p class="mb-0" style="font-size: 14px;">Level 31</p>
-                    </div>
-                </div>
-                <!-- Score only (no badge for 3rd place and below) -->
-                <div class="d-flex flex-column align-items-end">
-                    <span>9,750 pts</span>
-                </div>
+            
+            <div class="form-group-custom">
+                <input type="text" id="playerNameInput" class="input-field" placeholder="Your name" maxlength="20" autocomplete="off">
+                <input type="number" id="playerScoreInput" class="input-field" placeholder="Score (pts)" value="0" step="100">
+                <input type="number" id="playerLevelInput" class="input-field" placeholder="Level reached" value="1" min="1">
+                <button id="submitScoreBtn" class="btn-submit">🏆 SUBMIT SCORE</button>
             </div>
-
-            <!-- Player 4 -->
-            <div class="list-group-item d-flex align-items-center bg-warning rounded p-4" style="font-size: 30px;">
-                <!-- Rank -->
-                <span class="badge bg-secondary me-3 fs-6">4</span>
-                <!-- Avatar -->
-                <img src="padpng.png" alt="User Avatar" class="rounded-circle me-3" style="width: 50px; height: 50px;">
-                <!-- Name and Level in separate columns -->
-                <div class="flex-grow-1 row align-items-center">
-                    <div class="col-7">
-                        <p class="mb-0">Jamie Lee</p>
-                    </div>
-                    <div class="col-5 text-center">
-                        <p class="mb-0" style="font-size: 14px;">Level 27</p>
-                    </div>
-                </div>
-                <!-- Score -->
-                <div class="d-flex flex-column align-items-end">
-                    <span>8,100 pts</span>
-                </div>
+            <div class="small text-center text-warning mt-2" style="opacity:0.7;">
+                ⭐ Rank is assigned automatically based on your score! Higher score = better rank ⭐
             </div>
+        </div>
 
-            <!-- Player 5 -->
-            <!-- FIX 4: Removed extra stray </div> tags that were after bg-info, bg-warning, bg-danger blocks -->
-            <div class="list-group-item d-flex align-items-center bg-danger rounded p-4" style="font-size: 30px;    ">
-                <!-- Rank -->
-                <span class="badge bg-secondary me-3 fs-6">5</span>
-                <!-- Avatar -->
-                <img src="padpng.png" alt="User Avatar" class="rounded-circle me-3" style="width: 50px; height: 50px;">
-                <!-- Name and Level in separate columns -->
-                <div class="flex-grow-1 row align-items-center">
-                    <div class="col-7">
-                        <p class="mb-0">Priya O.</p>
+        <!-- navigation buttons -->
+        <div class="nav-buttons">
+            <a href="index.html" class="game-nav-btn">🏠 HOME</a>
+            <a href="Game 4/escape.html" class="game-nav-btn game-nav-btn-primary">🎮 PLAY GAME</a>
+            <button id="clearLeaderboardBtn" class="game-nav-btn" style="background:#4a2a2a;">🗑️ RESET BOARD</button>
+        </div>
+        <div class="footer-note">
+            💾 Scores saved locally. Ranks update automatically when new scores are added.
+        </div>
+    </div>
+</div>
+
+<script>
+    (function() {
+        // ---------- LEADERBOARD STORAGE ----------
+        const STORAGE_KEY = "coinchase_leaderboard_avatars_v2";
+
+        // Default entries with avatars (sample data)
+        const DEFAULT_ENTRIES = [
+            { name: "Alex King", score: 12840, level: 42, avatar: "🐺", date: Date.now() - 86400000 },
+            { name: "Sara Reeves", score: 11200, level: 38, avatar: "🦁", date: Date.now() - 172800000 },
+            { name: "Mike Tan", score: 9750, level: 31, avatar: "🐉", date: Date.now() - 259200000 },
+            { name: "Jamie Lee", score: 8100, level: 27, avatar: "🐱", date: Date.now() - 345600000 },
+            { name: "Priya O.", score: 6430, level: 22, avatar: "🦊", date: Date.now() - 432000000 },
+            { name: "Leo Zhang", score: 5210, level: 18, avatar: "🐧", date: Date.now() - 518400000 }
+        ];
+
+        // Load leaderboard from localStorage
+        function loadLeaderboard() {
+            const stored = localStorage.getItem(STORAGE_KEY);
+            if (stored) {
+                try {
+                    let data = JSON.parse(stored);
+                    if (Array.isArray(data) && data.length) {
+                        // sort again to ensure correct order (safety)
+                        data.sort((a, b) => {
+                            if (a.score !== b.score) return b.score - a.score;
+                            return b.level - a.level;
+                        });
+                        return data;
+                    }
+                    return [...DEFAULT_ENTRIES];
+                } catch(e) { return [...DEFAULT_ENTRIES]; }
+            } else {
+                saveLeaderboard(DEFAULT_ENTRIES);
+                return [...DEFAULT_ENTRIES];
+            }
+        }
+
+        function saveLeaderboard(entries) {
+            // sort before saving (ensures rank integrity)
+            entries.sort((a, b) => {
+                if (a.score !== b.score) return b.score - a.score;
+                return b.level - a.level;
+            });
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
+        }
+
+        // Add new score - rank will be determined automatically by sorting
+        function addScoreToLeaderboard(playerName, score, level, avatar) {
+            if (!playerName || playerName.trim() === "") playerName = "Mystery Racer";
+            if (!avatar) avatar = "🎮";
+            
+            const newEntry = {
+                name: playerName.trim().substring(0, 20),
+                score: Number(score),
+                level: Number(level) || 1,
+                avatar: avatar,
+                date: Date.now()
+            };
+            
+            let current = loadLeaderboard();
+            current.push(newEntry);
+            
+            // Sort by score (highest first), then by level (highest first) - THIS DETERMINES RANK
+            current.sort((a, b) => {
+                if (a.score !== b.score) return b.score - a.score;
+                return b.level - a.level;
+            });
+            
+            // Keep top 50 entries
+            if (current.length > 50) current = current.slice(0, 50);
+            saveLeaderboard(current);
+            renderLeaderboard(current);
+            return current;
+        }
+
+        // Get badge based on rank (1st, 2nd, 3rd, or score thresholds)
+        function getBadgeText(rank, score) {
+            if (rank === 1) return "🏆 CHAMPION";
+            if (rank === 2) return "🥈 ELITE";
+            if (rank === 3) return "🥉 CONTENDER";
+            if (score >= 10000) return "💎 LEGEND";
+            if (score >= 6000) return "🌟 VETERAN";
+            if (score >= 3000) return "⚡ RISING";
+            return "🪙 ROOKIE";
+        }
+
+        // Render leaderboard with AUTOMATIC ranks (based on sorted order)
+        function renderLeaderboard(entries) {
+            const container = document.getElementById('leaderboardList');
+            if (!container) return;
+            
+            if (!entries || entries.length === 0) {
+                container.innerHTML = '<div class="empty-message">✨ No scores yet. Choose an avatar and become a legend! ✨</div>';
+                return;
+            }
+
+            let html = '<div class="d-flex flex-column gap-2">';
+            entries.forEach((entry, idx) => {
+                const rank = idx + 1;  // RANK IS AUTOMATIC based on position in sorted array
+                let rankClass = "";
+                if (rank === 1) rankClass = "rank-1";
+                else if (rank === 2) rankClass = "rank-2";
+                else if (rank === 3) rankClass = "rank-3";
+                
+                const avatarIcon = entry.avatar || "🎮";
+                const badgeText = getBadgeText(rank, entry.score);
+                
+                // Format rank display with medal for top 3
+                let rankDisplay = `#${rank}`;
+                if (rank === 1) rankDisplay = "🥇";
+                else if (rank === 2) rankDisplay = "🥈";
+                else if (rank === 3) rankDisplay = "🥉";
+                
+                html += `
+                    <div class="rank-entry ${rankClass}">
+                        <div class="rank-number">${rankDisplay}</div>
+                        <div class="player-avatar">${avatarIcon}</div>
+                        <div class="player-info">
+                            <span class="player-name">${escapeHtml(entry.name)}</span>
+                            <span class="player-level">⭐ Level ${entry.level}</span>
+                        </div>
+                        <div class="player-score">${entry.score.toLocaleString()} pts</div>
+                        <div class="player-badge">${badgeText}</div>
                     </div>
-                    <div class="col-5 text-center">
-                        <p class="mb-0" style="font-size: 14px;">Level 22</p>
-                    </div>
-                </div>
-                <!-- Score -->
-                <div class="d-flex flex-column align-items-end">
-                    <span>6,430 pts</span>
-                </div>
-            </div>
+                `;
+            });
+            html += '</div>';
+            container.innerHTML = html;
+        }
 
-        </div><!-- end of d-flex flex-column gap-3 -->
+        function escapeHtml(str) {
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
 
-    </div><!-- end of container -->
-   <script src="js/bootstrap.bundle.min.js"></script>
+        // Reset leaderboard (clear all scores)
+        function resetLeaderboard() {
+            if (confirm("⚠️ RESET LEADERBOARD? All scores will be erased. Ranks will recalculate when new scores are added.")) {
+                saveLeaderboard([]);
+                renderLeaderboard([]);
+                showTempMessage("🗑️ Leaderboard cleared. Start fresh!");
+            }
+        }
+
+        // Show temporary floating message
+        function showTempMessage(msg) {
+            const existing = document.querySelector('.temp-toast');
+            if(existing) existing.remove();
+            const toastDiv = document.createElement('div');
+            toastDiv.className = 'temp-toast';
+            toastDiv.style.position = 'fixed';
+            toastDiv.style.bottom = '20px';
+            toastDiv.style.left = '50%';
+            toastDiv.style.transform = 'translateX(-50%)';
+            toastDiv.style.zIndex = '9999';
+            toastDiv.style.background = '#2a5f2f';
+            toastDiv.style.color = '#FFD966';
+            toastDiv.style.borderRadius = '60px';
+            toastDiv.style.padding = '10px 24px';
+            toastDiv.style.fontWeight = 'bold';
+            toastDiv.style.backdropFilter = 'blur(10px)';
+            toastDiv.style.fontSize = '0.9rem';
+            toastDiv.innerText = msg;
+            document.body.appendChild(toastDiv);
+            setTimeout(() => toastDiv.remove(), 2500);
+        }
+
+        // ---------- AVATAR SELECTION (Player only chooses avatar) ----------
+        let selectedAvatar = "🐺";
+        
+        function initAvatarPicker() {
+            const options = document.querySelectorAll('.avatar-option');
+            options.forEach(opt => {
+                opt.addEventListener('click', () => {
+                    options.forEach(o => o.classList.remove('selected'));
+                    opt.classList.add('selected');
+                    selectedAvatar = opt.getAttribute('data-avatar');
+                });
+            });
+            // set default selected (first one)
+            if (options.length > 0) {
+                options[0].classList.add('selected');
+                selectedAvatar = options[0].getAttribute('data-avatar');
+            }
+        }
+
+        // Handle manual score submission (player provides name, score, level - rank is AUTO)
+        function handleManualSubmit() {
+            let nameInput = document.getElementById('playerNameInput');
+            let scoreInput = document.getElementById('playerScoreInput');
+            let levelInput = document.getElementById('playerLevelInput');
+            
+            let name = nameInput.value.trim();
+            let score = parseInt(scoreInput.value, 10);
+            let level = parseInt(levelInput.value, 10);
+            
+            if (isNaN(score) || score < 0) score = 0;
+            if (isNaN(level) || level < 1) level = 1;
+            if (name === "") name = "Guest Adventurer";
+            
+            // Add to leaderboard - rank will be auto-calculated
+            addScoreToLeaderboard(name, score, level, selectedAvatar);
+            
+            // Clear inputs but keep avatar selection
+            nameInput.value = "";
+            scoreInput.value = "0";
+            levelInput.value = "1";
+            
+            // Show new rank info
+            const allEntries = loadLeaderboard();
+            let playerRank = -1;
+            for (let i = 0; i < allEntries.length; i++) {
+                if (allEntries[i].name === name && allEntries[i].score === score && allEntries[i].avatar === selectedAvatar) {
+                    playerRank = i + 1;
+                    break;
+                }
+            }
+            if (playerRank !== -1) {
+                showTempMessage(`✨ ${name} scored ${score} pts! Rank: #${playerRank} ✨`);
+            } else {
+                showTempMessage(`✨ ${name} added to leaderboard with ${score} pts! ✨`);
+            }
+        }
+
+        // Check for pending game result from sessionStorage (game integration)
+        function checkForPendingGameResult() {
+            const pendingResult = sessionStorage.getItem("coinchase_game_result");
+            if (pendingResult) {
+                try {
+                    const data = JSON.parse(pendingResult);
+                    if (data && typeof data.score !== 'undefined' && data.name) {
+                        let resultAvatar = data.avatar || selectedAvatar;
+                        addScoreToLeaderboard(data.name, data.score, data.level || 1, resultAvatar);
+                        sessionStorage.removeItem("coinchase_game_result");
+                        showTempMessage(`🏆 New champion: ${data.name} - ${data.score} pts! Rank auto-assigned!`);
+                    } else {
+                        sessionStorage.removeItem("coinchase_game_result");
+                    }
+                } catch(e) { sessionStorage.removeItem("coinchase_game_result"); }
+            }
+        }
+        
+        // Check URL params for quick integration
+        function checkUrlParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const name = urlParams.get('name');
+            const score = urlParams.get('score');
+            const level = urlParams.get('level');
+            const avatarParam = urlParams.get('avatar');
+            if (name && score !== null) {
+                const parsedScore = parseInt(score, 10);
+                const parsedLevel = parseInt(level, 10) || 1;
+                const avatarIcon = (avatarParam && avatarParam.length <= 2) ? avatarParam : "🎮";
+                if (!isNaN(parsedScore)) {
+                    addScoreToLeaderboard(name, parsedScore, parsedLevel, avatarIcon);
+                    // clean url
+                    const url = new URL(window.location.href);
+                    url.searchParams.delete('name');
+                    url.searchParams.delete('score');
+                    url.searchParams.delete('level');
+                    url.searchParams.delete('avatar');
+                    window.history.replaceState({}, '', url.toString());
+                    showTempMessage(`🏆 ${name} scored ${parsedScore} pts! Rank set automatically!`);
+                }
+            }
+        }
+        
+        // Particles background
+        function initParticles() {
+            const container = document.getElementById('particlesContainer');
+            if (!container) return;
+            container.innerHTML = '';
+            for (let i = 0; i < 70; i++) {
+                const p = document.createElement('div');
+                p.classList.add('particle');
+                const size = 2 + Math.random() * 6;
+                p.style.width = size + 'px';
+                p.style.height = size + 'px';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.top = Math.random() * 100 + '%';
+                p.style.animationDuration = 7 + Math.random() * 14 + 's';
+                p.style.animationDelay = Math.random() * 10 + 's';
+                p.style.opacity = 0.2 + Math.random() * 0.5;
+                container.appendChild(p);
+            }
+        }
+        
+        // Expose global function for game integration
+        window.CoinChaseLeaderboard = {
+            submitScore: function(playerName, score, level, avatarEmoji) {
+                addScoreToLeaderboard(playerName, score, level, avatarEmoji || "🎮");
+                const entries = loadLeaderboard();
+                let rank = -1;
+                for (let i = 0; i < entries.length; i++) {
+                    if (entries[i].name === playerName && entries[i].score === score) {
+                        rank = i + 1;
+                        break;
+                    }
+                }
+                if (rank !== -1) {
+                    showTempMessage(`✅ ${playerName} rank #${rank} with ${score} pts!`);
+                } else {
+                    showTempMessage(`✅ ${playerName} added to leaderboard!`);
+                }
+            },
+            getSelectedAvatar: function() { return selectedAvatar; }
+        };
+        
+        // Initialize everything
+        function init() {
+            initParticles();
+            initAvatarPicker();
+            const leaderboardData = loadLeaderboard();
+            renderLeaderboard(leaderboardData);
+            checkForPendingGameResult();
+            checkUrlParams();
+            
+            // Attach event listeners
+            const submitBtn = document.getElementById('submitScoreBtn');
+            if (submitBtn) submitBtn.addEventListener('click', handleManualSubmit);
+            
+            const clearBtn = document.getElementById('clearLeaderboardBtn');
+            if (clearBtn) clearBtn.addEventListener('click', resetLeaderboard);
+            
+            // Enter key submission
+            const inputs = ['playerNameInput', 'playerScoreInput', 'playerLevelInput'];
+            inputs.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') handleManualSubmit();
+                    });
+                }
+            });
+            
+            // Listen to storage changes (multi-tab sync)
+            window.addEventListener('storage', (e) => {
+                if (e.key === STORAGE_KEY) {
+                    const fresh = loadLeaderboard();
+                    renderLeaderboard(fresh);
+                }
+            });
+        }
+        
+        init();
+    })();
+</script>
 </body>
 </html>
