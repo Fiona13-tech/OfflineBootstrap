@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Coin Chase - Hall of Fame</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -18,7 +18,6 @@
             font-family: 'Segoe UI', system-ui, 'Inter', sans-serif;
         }
 
-        /* floating particles */
         .particle-bg {
             position: fixed;
             top: 0;
@@ -42,7 +41,6 @@
             100% { transform: translateY(-100vh) scale(1.2); opacity: 0; }
         }
 
-        /* main container */
         .leaderboard-wrapper {
             position: relative;
             z-index: 2;
@@ -83,10 +81,9 @@
             font-size: 0.9rem;
         }
 
-        /* leaderboard list */
         .leaderboard-list {
             padding: 1.5rem;
-            max-height: 480px;
+            max-height: 500px;
             overflow-y: auto;
         }
 
@@ -170,8 +167,8 @@
             font-size: 1.1rem;
         }
 
-        /* add score form - simplified (only name, score, level - avatar chosen separately) */
-        .add-score-panel {
+        /* Player setup panel */
+        .player-setup-panel {
             background: #0f1222dd;
             backdrop-filter: blur(20px);
             border-radius: 32px;
@@ -180,54 +177,57 @@
             border: 1px solid #ffb34755;
         }
 
-        .form-group-custom {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            align-items: flex-end;
-            justify-content: center;
-        }
-
-        .input-field {
-            background: #1e1a2f;
-            border: 1px solid #ffb347aa;
-            color: white;
-            padding: 8px 18px;
-            border-radius: 60px;
-            outline: none;
-            width: 180px;
-        }
-
-        .input-field::placeholder {
-            color: #b9b2a2;
-        }
-
-        /* avatar picker row - player ONLY chooses avatar */
-        .avatar-section {
-            margin-bottom: 1rem;
-        }
-
-        .avatar-label {
+        .setup-label {
             text-align: center;
             color: #ffdd99;
-            font-size: 0.85rem;
-            margin-bottom: 8px;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
             font-weight: 600;
+        }
+
+        .name-input-group {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .player-name-input {
+            background: #1e1a2f;
+            border: 2px solid #ffb347aa;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 60px;
+            outline: none;
+            width: 260px;
+            text-align: center;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .player-name-input:focus {
+            border-color: #ffd966;
+            box-shadow: 0 0 12px rgba(255, 200, 100, 0.4);
+        }
+
+        .player-name-input::placeholder {
+            color: #8888aa;
         }
 
         .avatar-picker {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             background: #0a0e1a;
-            padding: 8px 16px;
-            border-radius: 60px;
+            padding: 10px 20px;
+            border-radius: 80px;
             flex-wrap: wrap;
             justify-content: center;
         }
 
         .avatar-option {
-            width: 48px;
-            height: 48px;
+            width: 52px;
+            height: 52px;
             background: #2a2a4a;
             border-radius: 50%;
             display: flex;
@@ -246,10 +246,11 @@
 
         .avatar-option.selected {
             border-color: #ffd966;
-            box-shadow: 0 0 10px gold;
+            box-shadow: 0 0 12px gold;
+            background: #3a3a6a;
         }
 
-        .btn-submit {
+        .save-name-btn {
             background: #ffb347;
             border: none;
             border-radius: 60px;
@@ -259,48 +260,58 @@
             transition: 0.1s;
         }
 
-        .btn-submit:active {
+        .save-name-btn:active {
             transform: scale(0.96);
         }
 
-        /* navigation buttons */
+        .info-message {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 0.8rem;
+            color: #ffdd99;
+            background: rgba(0,0,0,0.4);
+            padding: 6px 12px;
+            border-radius: 40px;
+            display: inline-block;
+            width: auto;
+        }
+
+        /* Navigation buttons - Play Game button to return */
         .nav-buttons {
             display: flex;
             justify-content: center;
-            gap: 16px;
+            gap: 20px;
             padding: 0 1.5rem 1.5rem 1.5rem;
         }
 
         .game-nav-btn {
-            background: #2a2e45;
+            background: #2a6b2f;
             border: none;
             font-weight: bold;
-            padding: 8px 24px;
+            padding: 12px 40px;
             border-radius: 60px;
-            font-size: 0.9rem;
+            font-size: 1.1rem;
             transition: 0.2s;
-            color: #f5e7c8;
+            color: white;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             cursor: pointer;
         }
 
         .game-nav-btn:hover {
-            background: #3a3f60;
-            color: #FFD966;
-            transform: translateY(-2px);
-        }
-
-        .game-nav-btn-primary {
-            background: #2a6b2f;
-            color: white;
-        }
-
-        .game-nav-btn-primary:hover {
             background: #1f5724;
+            transform: translateY(-2px);
             color: #ffeaac;
+        }
+
+        .clear-btn {
+            background: #6b2a2a;
+        }
+
+        .clear-btn:hover {
+            background: #8a3535;
         }
 
         .footer-note {
@@ -310,7 +321,6 @@
             padding: 12px;
         }
 
-        /* badge style */
         .player-badge {
             background: #ffb34730;
             border-radius: 40px;
@@ -324,9 +334,9 @@
         @media (max-width: 700px) {
             .rank-entry { flex-wrap: wrap; gap: 8px; border-radius: 28px; }
             .player-score { text-align: left; }
-            .form-group-custom { flex-direction: column; align-items: stretch; }
-            .input-field { width: 100%; }
-            .player-badge { font-size: 0.65rem; }
+            .avatar-option { width: 45px; height: 45px; font-size: 1.5rem; }
+            .player-name-input { width: 180px; font-size: 0.9rem; }
+            .game-nav-btn { padding: 10px 25px; font-size: 1rem; }
         }
     </style>
 </head>
@@ -338,79 +348,78 @@
     <div class="leaderboard-card">
         <div class="leaderboard-header">
             <h1>🏆 COIN CHASE HALL OF FAME 🏆</h1>
-            <div class="subhead">⚡ Ranks are calculated automatically by score — pick your avatar and compete! ⚡</div>
+            <div class="subhead">⚡ Ranks are calculated automatically by score — set your name & avatar, then play! ⚡</div>
         </div>
 
         <div class="leaderboard-list" id="leaderboardList">
             <div class="empty-message">Loading champions...</div>
         </div>
 
-        <!-- Add Score Section - Player only chooses avatar, name, score, level (rank is automatic) -->
-        <div class="add-score-panel">
-            <div class="avatar-section">
-                <div class="avatar-label">🎭 CHOOSE YOUR AVATAR (click to select)</div>
-                <div class="avatar-picker" id="avatarPicker">
-                    <div class="avatar-option" data-avatar="🐺">🐺</div>
-                    <div class="avatar-option" data-avatar="🐉">🐉</div>
-                    <div class="avatar-option" data-avatar="🦁">🦁</div>
-                    <div class="avatar-option" data-avatar="🐱">🐱</div>
-                    <div class="avatar-option" data-avatar="🦊">🦊</div>
-                    <div class="avatar-option" data-avatar="🐧">🐧</div>
-                    <div class="avatar-option" data-avatar="👑">👑</div>
-                    <div class="avatar-option" data-avatar="⚡">⚡</div>
-                    <div class="avatar-option" data-avatar="🌟">🌟</div>
-                    <div class="avatar-option" data-avatar="🎮">🎮</div>
-                    <div class="avatar-option" data-avatar="🦅">🦅</div>
-                    <div class="avatar-option" data-avatar="🐢">🐢</div>
-                </div>
+        <!-- PLAYER SETUP: Name + Avatar -->
+        <div class="player-setup-panel">
+            <div class="setup-label">🎭 SET YOUR IDENTITY</div>
+            
+            <div class="name-input-group">
+                <input type="text" id="playerNameInput" class="player-name-input" placeholder="Enter your name" maxlength="20" autocomplete="off">
+                <button id="saveNameBtn" class="save-name-btn">SAVE NAME</button>
             </div>
             
-            <div class="form-group-custom">
-                <input type="text" id="playerNameInput" class="input-field" placeholder="Your name" maxlength="20" autocomplete="off">
-                <input type="number" id="playerScoreInput" class="input-field" placeholder="Score (pts)" value="0" step="100">
-                <input type="number" id="playerLevelInput" class="input-field" placeholder="Level reached" value="1" min="1">
-                <button id="submitScoreBtn" class="btn-submit">🏆 SUBMIT SCORE</button>
+            <div class="avatar-label" style="text-align: center; margin-bottom: 8px; font-size: 0.85rem;">CHOOSE YOUR AVATAR</div>
+            <div class="avatar-picker" id="avatarPicker">
+                <div class="avatar-option" data-avatar="🐺">🐺</div>
+                <div class="avatar-option" data-avatar="🐉">🐉</div>
+                <div class="avatar-option" data-avatar="🦁">🦁</div>
+                <div class="avatar-option" data-avatar="🐱">🐱</div>
+                <div class="avatar-option" data-avatar="🦊">🦊</div>
+                <div class="avatar-option" data-avatar="🐧">🐧</div>
+                <div class="avatar-option" data-avatar="👑">👑</div>
+                <div class="avatar-option" data-avatar="⚡">⚡</div>
+                <div class="avatar-option" data-avatar="🌟">🌟</div>
+                <div class="avatar-option" data-avatar="🎮">🎮</div>
+                <div class="avatar-option" data-avatar="🦅">🦅</div>
+                <div class="avatar-option" data-avatar="🐢">🐢</div>
+                <div class="avatar-option" data-avatar="🔥">🔥</div>
+                <div class="avatar-option" data-avatar="💀">💀</div>
             </div>
-            <div class="small text-center text-warning mt-2" style="opacity:0.7;">
-                ⭐ Rank is assigned automatically based on your score! Higher score = better rank ⭐
+            
+            <div class="text-center mt-3">
+                <span class="info-message" id="activePlayerDisplay">⚡ No name set. Enter your name above! ⚡</span>
             </div>
         </div>
 
-        <!-- navigation buttons -->
+        <!-- Navigation buttons - Play Game to return to game + Clear Board -->
         <div class="nav-buttons">
-            <a href="index.html" class="game-nav-btn">🏠 HOME</a>
-            <a href="Game 4/escape.html" class="game-nav-btn game-nav-btn-primary">🎮 PLAY GAME</a>
-            <button id="clearLeaderboardBtn" class="game-nav-btn" style="background:#4a2a2a;">🗑️ RESET BOARD</button>
+            <a href="Game 4/escape.html" class="game-nav-btn">🎮 PLAY GAME</a>
+            <button id="clearLeaderboardBtn" class="game-nav-btn clear-btn">🗑️ CLEAR BOARD</button>
         </div>
         <div class="footer-note">
-            💾 Scores saved locally. Ranks update automatically when new scores are added.
+            💾 Your name and avatar are saved. After finishing a game, your score appears here automatically!
         </div>
     </div>
 </div>
 
 <script>
     (function() {
-        // ---------- LEADERBOARD STORAGE ----------
-        const STORAGE_KEY = "coinchase_leaderboard_avatars_v2";
+        // ============ LEADERBOARD STORAGE ============
+        const STORAGE_KEY = "coinchase_leaderboard_final";
+        const PLAYER_NAME_KEY = "coinchase_player_name";
+        const PLAYER_AVATAR_KEY = "coinchase_player_avatar";
 
-        // Default entries with avatars (sample data)
+        // Default sample entries
         const DEFAULT_ENTRIES = [
             { name: "Alex King", score: 12840, level: 42, avatar: "🐺", date: Date.now() - 86400000 },
             { name: "Sara Reeves", score: 11200, level: 38, avatar: "🦁", date: Date.now() - 172800000 },
             { name: "Mike Tan", score: 9750, level: 31, avatar: "🐉", date: Date.now() - 259200000 },
             { name: "Jamie Lee", score: 8100, level: 27, avatar: "🐱", date: Date.now() - 345600000 },
-            { name: "Priya O.", score: 6430, level: 22, avatar: "🦊", date: Date.now() - 432000000 },
-            { name: "Leo Zhang", score: 5210, level: 18, avatar: "🐧", date: Date.now() - 518400000 }
+            { name: "Priya O.", score: 6430, level: 22, avatar: "🦊", date: Date.now() - 432000000 }
         ];
 
-        // Load leaderboard from localStorage
         function loadLeaderboard() {
             const stored = localStorage.getItem(STORAGE_KEY);
             if (stored) {
                 try {
                     let data = JSON.parse(stored);
                     if (Array.isArray(data) && data.length) {
-                        // sort again to ensure correct order (safety)
                         data.sort((a, b) => {
                             if (a.score !== b.score) return b.score - a.score;
                             return b.level - a.level;
@@ -426,7 +435,6 @@
         }
 
         function saveLeaderboard(entries) {
-            // sort before saving (ensures rank integrity)
             entries.sort((a, b) => {
                 if (a.score !== b.score) return b.score - a.score;
                 return b.level - a.level;
@@ -434,10 +442,10 @@
             localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
         }
 
-        // Add new score - rank will be determined automatically by sorting
+        // Add new score from game completion
         function addScoreToLeaderboard(playerName, score, level, avatar) {
             if (!playerName || playerName.trim() === "") playerName = "Mystery Racer";
-            if (!avatar) avatar = "🎮";
+            if (!avatar) avatar = "🐺";
             
             const newEntry = {
                 name: playerName.trim().substring(0, 20),
@@ -450,20 +458,17 @@
             let current = loadLeaderboard();
             current.push(newEntry);
             
-            // Sort by score (highest first), then by level (highest first) - THIS DETERMINES RANK
             current.sort((a, b) => {
                 if (a.score !== b.score) return b.score - a.score;
                 return b.level - a.level;
             });
             
-            // Keep top 50 entries
             if (current.length > 50) current = current.slice(0, 50);
             saveLeaderboard(current);
             renderLeaderboard(current);
             return current;
         }
 
-        // Get badge based on rank (1st, 2nd, 3rd, or score thresholds)
         function getBadgeText(rank, score) {
             if (rank === 1) return "🏆 CHAMPION";
             if (rank === 2) return "🥈 ELITE";
@@ -474,19 +479,18 @@
             return "🪙 ROOKIE";
         }
 
-        // Render leaderboard with AUTOMATIC ranks (based on sorted order)
         function renderLeaderboard(entries) {
             const container = document.getElementById('leaderboardList');
             if (!container) return;
             
             if (!entries || entries.length === 0) {
-                container.innerHTML = '<div class="empty-message">✨ No scores yet. Choose an avatar and become a legend! ✨</div>';
+                container.innerHTML = '<div class="empty-message">✨ No scores yet. Play the game and become a legend! ✨</div>';
                 return;
             }
 
             let html = '<div class="d-flex flex-column gap-2">';
             entries.forEach((entry, idx) => {
-                const rank = idx + 1;  // RANK IS AUTOMATIC based on position in sorted array
+                const rank = idx + 1;
                 let rankClass = "";
                 if (rank === 1) rankClass = "rank-1";
                 else if (rank === 2) rankClass = "rank-2";
@@ -495,14 +499,18 @@
                 const avatarIcon = entry.avatar || "🎮";
                 const badgeText = getBadgeText(rank, entry.score);
                 
-                // Format rank display with medal for top 3
                 let rankDisplay = `#${rank}`;
                 if (rank === 1) rankDisplay = "🥇";
                 else if (rank === 2) rankDisplay = "🥈";
                 else if (rank === 3) rankDisplay = "🥉";
                 
+                // Highlight current player's entry
+                const currentPlayerName = localStorage.getItem(PLAYER_NAME_KEY) || "";
+                const isCurrentPlayer = (currentPlayerName && entry.name === currentPlayerName);
+                const highlightStyle = isCurrentPlayer ? 'background: rgba(255, 180, 70, 0.25); border-left: 4px solid #ffd966;' : '';
+                
                 html += `
-                    <div class="rank-entry ${rankClass}">
+                    <div class="rank-entry ${rankClass}" style="${highlightStyle}">
                         <div class="rank-number">${rankDisplay}</div>
                         <div class="player-avatar">${avatarIcon}</div>
                         <div class="player-info">
@@ -527,17 +535,7 @@
             });
         }
 
-        // Reset leaderboard (clear all scores)
-        function resetLeaderboard() {
-            if (confirm("⚠️ RESET LEADERBOARD? All scores will be erased. Ranks will recalculate when new scores are added.")) {
-                saveLeaderboard([]);
-                renderLeaderboard([]);
-                showTempMessage("🗑️ Leaderboard cleared. Start fresh!");
-            }
-        }
-
-        // Show temporary floating message
-        function showTempMessage(msg) {
+        function showTempMessage(msg, isError = false) {
             const existing = document.querySelector('.temp-toast');
             if(existing) existing.remove();
             const toastDiv = document.createElement('div');
@@ -547,7 +545,7 @@
             toastDiv.style.left = '50%';
             toastDiv.style.transform = 'translateX(-50%)';
             toastDiv.style.zIndex = '9999';
-            toastDiv.style.background = '#2a5f2f';
+            toastDiv.style.background = isError ? '#8b3a3a' : '#2a5f2f';
             toastDiv.style.color = '#FFD966';
             toastDiv.style.borderRadius = '60px';
             toastDiv.style.padding = '10px 24px';
@@ -556,67 +554,88 @@
             toastDiv.style.fontSize = '0.9rem';
             toastDiv.innerText = msg;
             document.body.appendChild(toastDiv);
-            setTimeout(() => toastDiv.remove(), 2500);
+            setTimeout(() => toastDiv.remove(), 3000);
         }
 
-        // ---------- AVATAR SELECTION (Player only chooses avatar) ----------
-        let selectedAvatar = "🐺";
-        
+        // ============ PLAYER NAME & AVATAR MANAGEMENT ============
+        let currentPlayerName = localStorage.getItem(PLAYER_NAME_KEY) || "";
+        let selectedAvatar = localStorage.getItem(PLAYER_AVATAR_KEY) || "🐺";
+
+        function updatePlayerDisplay() {
+            const displaySpan = document.getElementById('activePlayerDisplay');
+            if (displaySpan) {
+                if (currentPlayerName) {
+                    displaySpan.innerHTML = `✅ Active: ${currentPlayerName} ${selectedAvatar} — Your scores will use this identity!`;
+                    displaySpan.style.color = "#FFD966";
+                } else {
+                    displaySpan.innerHTML = `⚡ No name set. Enter your name above! ⚡`;
+                    displaySpan.style.color = "#ffaa88";
+                }
+            }
+        }
+
+        function savePlayerName() {
+            const input = document.getElementById('playerNameInput');
+            let newName = input.value.trim();
+            if (newName === "") {
+                showTempMessage("⚠️ Please enter a name!", true);
+                return;
+            }
+            if (newName.length > 20) newName = newName.substring(0, 20);
+            currentPlayerName = newName;
+            localStorage.setItem(PLAYER_NAME_KEY, currentPlayerName);
+            input.value = currentPlayerName;
+            updatePlayerDisplay();
+            showTempMessage(`✨ Name saved: ${currentPlayerName} ✨`);
+            
+            // Refresh leaderboard to highlight current player
+            const freshData = loadLeaderboard();
+            renderLeaderboard(freshData);
+        }
+
         function initAvatarPicker() {
             const options = document.querySelectorAll('.avatar-option');
+            // Load saved avatar
+            const savedAvatar = localStorage.getItem(PLAYER_AVATAR_KEY);
+            if (savedAvatar) {
+                selectedAvatar = savedAvatar;
+            }
+            
             options.forEach(opt => {
+                const avatarValue = opt.getAttribute('data-avatar');
+                if (avatarValue === selectedAvatar) {
+                    opt.classList.add('selected');
+                }
                 opt.addEventListener('click', () => {
                     options.forEach(o => o.classList.remove('selected'));
                     opt.classList.add('selected');
                     selectedAvatar = opt.getAttribute('data-avatar');
+                    localStorage.setItem(PLAYER_AVATAR_KEY, selectedAvatar);
+                    showTempMessage(`🎭 Avatar changed to ${selectedAvatar}!`);
+                    updatePlayerDisplay();
+                    
+                    // Refresh leaderboard
+                    const freshData = loadLeaderboard();
+                    renderLeaderboard(freshData);
                 });
             });
-            // set default selected (first one)
-            if (options.length > 0) {
+            
+            if (!savedAvatar && options.length > 0) {
                 options[0].classList.add('selected');
                 selectedAvatar = options[0].getAttribute('data-avatar');
+                localStorage.setItem(PLAYER_AVATAR_KEY, selectedAvatar);
+            }
+            updatePlayerDisplay();
+        }
+
+        function populateNameInput() {
+            const input = document.getElementById('playerNameInput');
+            if (input && currentPlayerName) {
+                input.value = currentPlayerName;
             }
         }
 
-        // Handle manual score submission (player provides name, score, level - rank is AUTO)
-        function handleManualSubmit() {
-            let nameInput = document.getElementById('playerNameInput');
-            let scoreInput = document.getElementById('playerScoreInput');
-            let levelInput = document.getElementById('playerLevelInput');
-            
-            let name = nameInput.value.trim();
-            let score = parseInt(scoreInput.value, 10);
-            let level = parseInt(levelInput.value, 10);
-            
-            if (isNaN(score) || score < 0) score = 0;
-            if (isNaN(level) || level < 1) level = 1;
-            if (name === "") name = "Guest Adventurer";
-            
-            // Add to leaderboard - rank will be auto-calculated
-            addScoreToLeaderboard(name, score, level, selectedAvatar);
-            
-            // Clear inputs but keep avatar selection
-            nameInput.value = "";
-            scoreInput.value = "0";
-            levelInput.value = "1";
-            
-            // Show new rank info
-            const allEntries = loadLeaderboard();
-            let playerRank = -1;
-            for (let i = 0; i < allEntries.length; i++) {
-                if (allEntries[i].name === name && allEntries[i].score === score && allEntries[i].avatar === selectedAvatar) {
-                    playerRank = i + 1;
-                    break;
-                }
-            }
-            if (playerRank !== -1) {
-                showTempMessage(`✨ ${name} scored ${score} pts! Rank: #${playerRank} ✨`);
-            } else {
-                showTempMessage(`✨ ${name} added to leaderboard with ${score} pts! ✨`);
-            }
-        }
-
-        // Check for pending game result from sessionStorage (game integration)
+        // ============ GAME INTEGRATION (auto score submission) ============
         function checkForPendingGameResult() {
             const pendingResult = sessionStorage.getItem("coinchase_game_result");
             if (pendingResult) {
@@ -624,9 +643,23 @@
                     const data = JSON.parse(pendingResult);
                     if (data && typeof data.score !== 'undefined' && data.name) {
                         let resultAvatar = data.avatar || selectedAvatar;
-                        addScoreToLeaderboard(data.name, data.score, data.level || 1, resultAvatar);
+                        let playerLevel = data.level || 1;
+                        addScoreToLeaderboard(data.name, data.score, playerLevel, resultAvatar);
                         sessionStorage.removeItem("coinchase_game_result");
-                        showTempMessage(`🏆 New champion: ${data.name} - ${data.score} pts! Rank auto-assigned!`);
+                        
+                        const entries = loadLeaderboard();
+                        let newRank = -1;
+                        for (let i = 0; i < entries.length; i++) {
+                            if (entries[i].name === data.name && entries[i].score === data.score) {
+                                newRank = i + 1;
+                                break;
+                            }
+                        }
+                        if (newRank !== -1) {
+                            showTempMessage(`🏆 ${data.name} scored ${data.score} pts! Rank: #${newRank} 🏆`);
+                        } else {
+                            showTempMessage(`🏆 ${data.name} added with ${data.score} pts!`);
+                        }
                     } else {
                         sessionStorage.removeItem("coinchase_game_result");
                     }
@@ -634,7 +667,6 @@
             }
         }
         
-        // Check URL params for quick integration
         function checkUrlParams() {
             const urlParams = new URLSearchParams(window.location.search);
             const name = urlParams.get('name');
@@ -644,22 +676,29 @@
             if (name && score !== null) {
                 const parsedScore = parseInt(score, 10);
                 const parsedLevel = parseInt(level, 10) || 1;
-                const avatarIcon = (avatarParam && avatarParam.length <= 2) ? avatarParam : "🎮";
+                const avatarIcon = (avatarParam && avatarParam.length <= 2) ? avatarParam : selectedAvatar;
                 if (!isNaN(parsedScore)) {
                     addScoreToLeaderboard(name, parsedScore, parsedLevel, avatarIcon);
-                    // clean url
                     const url = new URL(window.location.href);
                     url.searchParams.delete('name');
                     url.searchParams.delete('score');
                     url.searchParams.delete('level');
                     url.searchParams.delete('avatar');
                     window.history.replaceState({}, '', url.toString());
-                    showTempMessage(`🏆 ${name} scored ${parsedScore} pts! Rank set automatically!`);
+                    
+                    const entries = loadLeaderboard();
+                    let newRank = -1;
+                    for (let i = 0; i < entries.length; i++) {
+                        if (entries[i].name === name && entries[i].score === parsedScore) {
+                            newRank = i + 1;
+                            break;
+                        }
+                    }
+                    showTempMessage(`🏆 ${name} rank #${newRank} with ${parsedScore} pts!`);
                 }
             }
         }
         
-        // Particles background
         function initParticles() {
             const container = document.getElementById('particlesContainer');
             if (!container) return;
@@ -679,61 +718,76 @@
             }
         }
         
-        // Expose global function for game integration
+        // Global API for game integration
         window.CoinChaseLeaderboard = {
             submitScore: function(playerName, score, level, avatarEmoji) {
-                addScoreToLeaderboard(playerName, score, level, avatarEmoji || "🎮");
+                const finalAvatar = avatarEmoji || selectedAvatar;
+                const finalName = playerName || currentPlayerName;
+                if (!finalName || finalName.trim() === "") {
+                    showTempMessage("⚠️ Set your name on the leaderboard first!", true);
+                    return false;
+                }
+                addScoreToLeaderboard(finalName, score, level || 1, finalAvatar);
                 const entries = loadLeaderboard();
                 let rank = -1;
                 for (let i = 0; i < entries.length; i++) {
-                    if (entries[i].name === playerName && entries[i].score === score) {
+                    if (entries[i].name === finalName && entries[i].score === score) {
                         rank = i + 1;
                         break;
                     }
                 }
                 if (rank !== -1) {
-                    showTempMessage(`✅ ${playerName} rank #${rank} with ${score} pts!`);
+                    showTempMessage(`✅ ${finalName} reached rank #${rank} with ${score} pts!`);
                 } else {
-                    showTempMessage(`✅ ${playerName} added to leaderboard!`);
+                    showTempMessage(`✅ ${finalName} added with ${score} points!`);
                 }
+                return true;
             },
-            getSelectedAvatar: function() { return selectedAvatar; }
+            getPlayerName: function() { return currentPlayerName; },
+            getPlayerAvatar: function() { return selectedAvatar; }
         };
+        
+        // Clear leaderboard
+        function resetLeaderboard() {
+            if (confirm("⚠️ WARNING: This will erase ALL scores from the leaderboard. Are you sure?")) {
+                saveLeaderboard([]);
+                renderLeaderboard([]);
+                showTempMessage("🗑️ Leaderboard cleared! Play the game to add new scores.");
+            }
+        }
         
         // Initialize everything
         function init() {
             initParticles();
+            populateNameInput();
             initAvatarPicker();
+            
             const leaderboardData = loadLeaderboard();
             renderLeaderboard(leaderboardData);
             checkForPendingGameResult();
             checkUrlParams();
             
-            // Attach event listeners
-            const submitBtn = document.getElementById('submitScoreBtn');
-            if (submitBtn) submitBtn.addEventListener('click', handleManualSubmit);
+            const saveBtn = document.getElementById('saveNameBtn');
+            if (saveBtn) saveBtn.addEventListener('click', savePlayerName);
             
             const clearBtn = document.getElementById('clearLeaderboardBtn');
             if (clearBtn) clearBtn.addEventListener('click', resetLeaderboard);
             
-            // Enter key submission
-            const inputs = ['playerNameInput', 'playerScoreInput', 'playerLevelInput'];
-            inputs.forEach(id => {
-                const el = document.getElementById(id);
-                if (el) {
-                    el.addEventListener('keypress', (e) => {
-                        if (e.key === 'Enter') handleManualSubmit();
-                    });
-                }
-            });
+            const nameInput = document.getElementById('playerNameInput');
+            if (nameInput) {
+                nameInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') savePlayerName();
+                });
+            }
             
-            // Listen to storage changes (multi-tab sync)
             window.addEventListener('storage', (e) => {
                 if (e.key === STORAGE_KEY) {
                     const fresh = loadLeaderboard();
                     renderLeaderboard(fresh);
                 }
             });
+            
+            updatePlayerDisplay();
         }
         
         init();

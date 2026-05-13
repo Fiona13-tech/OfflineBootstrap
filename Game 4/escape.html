@@ -1087,6 +1087,33 @@
 
     document.getElementById('startBtn').addEventListener('click', startGame);
 
+
+    // When game ends, submit score to leaderboard
+function submitScoreToLeaderboard(finalScore, levelReached) {
+    // Get player info from localStorage (set by leaderboard page)
+    const playerName = localStorage.getItem("coinchase_player_name");
+    const playerAvatar = localStorage.getItem("coinchase_player_avatar");
+    
+    if (playerName && playerName !== "") {
+        // Save to sessionStorage for leaderboard to read
+        sessionStorage.setItem("coinchase_game_result", JSON.stringify({
+            name: playerName,
+            score: finalScore,
+            level: levelReached,
+            avatar: playerAvatar || "🐺"
+        }));
+        
+        // Optional: redirect to leaderboard
+        window.location.href = "leaderboard.html";
+    } else {
+        alert("Please set your name on the leaderboard page first!");
+        window.location.href = "leaderboard.html";
+    }
+}
+
+// Call this when game over (modify your existing game over function)
+// Example: submitScoreToLeaderboard(score, level);
+
   </script>
 </body>
 </html> 
